@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syntax Arcade: Fractured Core</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <div id="game-shell">
+
+    <div id="hud">
+      <div id="game-title">
+        FRACTURED CORE
+      </div>
+
+      <div id="health">
+        ❤️ ❤️ ❤️
+      </div>
+
+      <div id="shards">
+        DATA: <span id="shard-count">0</span>
+      </div>
+    </div>
+
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+
+    <div id="controls">
+      <span>← → Move</span>
+      <span>↑ / SPACE Jump</span>
+      <span>Z Shoot</span>
+    </div>
+
+  </div>
+
+  <script src="game.js"></script>
+
+</body>
+</html>
