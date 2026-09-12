@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 50% 20%, #18265c 0%, #090d23 40%, #02040d 85%);
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+/* MAIN GAME AREA */
+
+#game-shell {
+  width: min(1280px, 100%);
+  position: relative;
+}
+
+/* HUD */
+
+#hud {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  padding: 12px 18px;
+  margin-bottom: 8px;
+
+  background: rgba(3, 8, 25, 0.88);
+  border: 1px solid rgba(35, 225, 255, 0.35);
+  border-radius: 8px;
+
+  box-shadow:
+    0 0 18px rgba(0, 204, 255, 0.12),
+    inset 0 0 25px rgba(76, 0, 255, 0.08);
+}
+
+#game-title {
+  color: #4feaff;
+  font-weight: 800;
+  letter-spacing: 3px;
+  font-size: 17px;
+
+  text-shadow:
+    0 0 5px #00c8ff,
+    0 0 14px rgba(0, 200, 255, 0.6);
+}
+
+#health {
+  font-size: 21px;
+  letter-spacing: 5px;
+  text-align: center;
+}
+
+#shards {
+  text-align: right;
+
+  color: #bf9cff;
+  font-weight: bold;
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 0 8px rgba(167, 94, 255, 0.75);
+}
+
+#shard-count {
+  color: white;
+}
+
+/* GAME CANVAS */
+
+#gameCanvas {
+  width: 100%;
+  height: auto;
+
+  display: block;
+
+  background:
+    linear-gradient(
+      180deg,
+      #111b47 0%,
+      #101530 45%,
+      #070a18 100%
+    );
+
+  border: 2px solid #16cbea;
+  border-radius: 6px;
+
+  box-shadow:
+    0 0 12px rgba(0, 210, 255, 0.45),
+    0 0 35px rgba(97, 43, 255, 0.25);
+
+  image-rendering: auto;
+}
+
+/* CONTROLS BAR */
+
+#controls {
+  margin-top: 10px;
+
+  display: flex;
+  justify-content: center;
+  gap: 35px;
+  flex-wrap: wrap;
+
+  padding: 10px;
+
+  background: rgba(4, 8, 22, 0.7);
+
+  border-top: 1px solid rgba(89, 223, 255, 0.22);
+
+  color: #9db5d7;
+
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+#controls span {
+  white-space: nowrap;
+}
+
+/* SMALL SCREENS */
+
+@media (max-width: 700px) {
+
+  body {
+    padding: 8px;
+    align-items: flex-start;
+  }
+
+  #hud {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  #game-title {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  #health {
+    text-align: left;
+  }
+
+  #shards {
+    text-align: right;
+  }
+
+  #controls {
+    gap: 12px;
+    font-size: 11px;
+  }
+}
