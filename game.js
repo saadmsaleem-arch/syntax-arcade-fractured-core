@@ -326,9 +326,9 @@ const music = {
 music.level.loop = true;
 music.boss.loop = true;
 
-music.level.volume = 0.42;
-music.boss.volume = 0.46;
-music.complete.volume = 0.58;
+music.level.volume = 1;
+music.boss.volume = 1;
+music.complete.volume = 1;
 
 let audioUnlocked = false;
 let muted = false;
