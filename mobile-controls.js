@@ -1,15 +1,34 @@
 /* =========================================================
    SYNTAX ARCADE — MOBILE CONTROLS
-   Works with the existing Fractured Core keyboard controls.
+   FRACTURED CORE
+
+   Adds:
+   - Responsive phone sizing
+   - Landscape support
+   - Left / right controls
+   - Jump
+   - Shoot + hold-to-charge
+   - Dash
+   - Mute
+   - Menu
+   - Tap difficulty selection
+   - Multi-touch support
 ========================================================= */
 
 (() => {
 
-  const canvas = document.getElementById("gameCanvas");
+  const canvas =
+    document.getElementById("gameCanvas");
+
 
   if (!canvas) {
-    console.warn("Mobile controls: gameCanvas not found.");
+
+    console.warn(
+      "Mobile controls: gameCanvas not found."
+    );
+
     return;
+
   }
 
 
@@ -18,55 +37,118 @@
   ======================================================= */
 
   const isTouchDevice =
-    window.matchMedia("(pointer: coarse)").matches ||
-    "ontouchstart" in window ||
+
+    window.matchMedia(
+      "(pointer: coarse)"
+    ).matches
+
+    ||
+
+    "ontouchstart" in window
+
+    ||
+
     navigator.maxTouchPoints > 0;
 
 
   if (!isTouchDevice) {
+
     return;
+
   }
+
+
+  /* =======================================================
+     VIEWPORT
+  ======================================================= */
+
+  let viewportMeta =
+    document.querySelector(
+      'meta[name="viewport"]'
+    );
+
+
+  if (!viewportMeta) {
+
+    viewportMeta =
+      document.createElement("meta");
+
+    viewportMeta.name =
+      "viewport";
+
+    document.head.appendChild(
+      viewportMeta
+    );
+
+  }
+
+
+  viewportMeta.content =
+    "width=device-width, initial-scale=1, viewport-fit=cover";
 
 
   /* =======================================================
      MOBILE CSS
   ======================================================= */
 
-  const style = document.createElement("style");
+  const style =
+    document.createElement("style");
+
 
   style.textContent = `
 
-    /* -----------------------------------------------
-       RESPONSIVE GAME
-    ------------------------------------------------ */
+    html,
+    body {
+      overscroll-behavior: none;
+    }
+
 
     #gameCanvas {
       display: block;
-      width: 100% !important;
-      height: auto !important;
-      max-width: 100%;
-    }
 
-    .mobile-game-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
+      width: 100% !important;
+      height: 100% !important;
+
+      max-width: none !important;
+      max-height: none !important;
+
+      object-fit: contain;
+
       touch-action: none;
+
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
-      overflow: hidden;
     }
 
 
-    /* -----------------------------------------------
-       TOUCH CONTROLS
-    ------------------------------------------------ */
+    .mobile-game-wrap {
+      position: relative;
+
+      margin-left: auto;
+      margin-right: auto;
+
+      overflow: hidden;
+
+      touch-action: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+
+      background: #050816;
+    }
+
+
+    /* =====================================================
+       MAIN TOUCH CONTROLS
+    ====================================================== */
 
     .mobile-controls {
       position: absolute;
+
       inset: 0;
+
       z-index: 20;
 
       pointer-events: none;
@@ -81,10 +163,17 @@
     .mobile-left,
     .mobile-right {
       position: absolute;
-      bottom: max(14px, env(safe-area-inset-bottom));
+
+      bottom:
+        max(
+          10px,
+          env(safe-area-inset-bottom)
+        );
 
       display: flex;
+
       align-items: flex-end;
+
       gap: 10px;
 
       pointer-events: none;
@@ -92,45 +181,96 @@
 
 
     .mobile-left {
-      left: max(14px, env(safe-area-inset-left));
+      left:
+        max(
+          12px,
+          env(safe-area-inset-left)
+        );
     }
 
 
     .mobile-right {
-      right: max(14px, env(safe-area-inset-right));
+      right:
+        max(
+          12px,
+          env(safe-area-inset-right)
+        );
     }
 
 
     .mobile-action-column {
       display: flex;
+
       flex-direction: column;
-      gap: 9px;
+
+      gap: 8px;
     }
 
 
     .mobile-btn {
-      width: clamp(52px, 9vw, 82px);
-      height: clamp(52px, 9vw, 82px);
+      width: clamp(
+        52px,
+        9vw,
+        82px
+      );
+
+      height: clamp(
+        52px,
+        9vw,
+        82px
+      );
+
+      padding: 0;
 
       border-radius: 50%;
-      border: 2px solid rgba(109, 242, 255, 0.75);
+
+      border:
+        2px solid
+        rgba(
+          109,
+          242,
+          255,
+          0.76
+        );
 
       background:
-        rgba(6, 13, 35, 0.66);
+        rgba(
+          6,
+          13,
+          35,
+          0.62
+        );
 
       color: white;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
-      font-size: clamp(20px, 4vw, 34px);
+      font-size: clamp(
+        20px,
+        4vw,
+        34px
+      );
+
       font-weight: 700;
 
       box-shadow:
-        0 0 12px rgba(47, 225, 255, 0.3);
+        0 0 12px
+        rgba(
+          47,
+          225,
+          255,
+          0.30
+        );
 
-      backdrop-filter: blur(4px);
+      backdrop-filter:
+        blur(4px);
+
+      -webkit-backdrop-filter:
+        blur(4px);
 
       pointer-events: auto;
 
@@ -138,6 +278,10 @@
 
       user-select: none;
       -webkit-user-select: none;
+      -webkit-touch-callout: none;
+
+      -webkit-tap-highlight-color:
+        transparent;
 
       cursor: pointer;
     }
@@ -146,10 +290,20 @@
     .mobile-btn:active,
     .mobile-btn.mobile-active {
       background:
-        rgba(43, 216, 255, 0.45);
+        rgba(
+          43,
+          216,
+          255,
+          0.46
+        );
 
       border-color:
-        rgba(255, 255, 255, 0.95);
+        rgba(
+          255,
+          255,
+          255,
+          0.96
+        );
 
       transform:
         scale(0.94);
@@ -157,43 +311,87 @@
 
 
     .mobile-btn-shoot {
-      width: clamp(62px, 11vw, 94px);
-      height: clamp(62px, 11vw, 94px);
+      width: clamp(
+        62px,
+        11vw,
+        94px
+      );
+
+      height: clamp(
+        62px,
+        11vw,
+        94px
+      );
 
       border-color:
-        rgba(229, 89, 255, 0.9);
+        rgba(
+          229,
+          89,
+          255,
+          0.90
+        );
 
       box-shadow:
-        0 0 14px rgba(215, 62, 255, 0.42);
+        0 0 14px
+        rgba(
+          215,
+          62,
+          255,
+          0.42
+        );
     }
 
 
     .mobile-btn-jump {
       border-color:
-        rgba(77, 255, 214, 0.85);
+        rgba(
+          77,
+          255,
+          214,
+          0.86
+        );
     }
 
 
     .mobile-btn-dash {
-      width: clamp(46px, 7vw, 66px);
-      height: clamp(46px, 7vw, 66px);
+      width: clamp(
+        46px,
+        7vw,
+        66px
+      );
 
-      font-size: clamp(12px, 2.2vw, 18px);
+      height: clamp(
+        46px,
+        7vw,
+        66px
+      );
+
+      font-size: clamp(
+        11px,
+        2.2vw,
+        17px
+      );
     }
 
 
-    /* -----------------------------------------------
-       SMALL TOP BUTTONS
-    ------------------------------------------------ */
+    /* =====================================================
+       TOP BUTTONS
+    ====================================================== */
 
     .mobile-top-buttons {
       position: absolute;
 
-      top: 10px;
-      right: 10px;
+      top: 8px;
+
+      right:
+        max(
+          8px,
+          env(safe-area-inset-right)
+        );
 
       display: flex;
-      gap: 8px;
+
+      gap: 7px;
 
       pointer-events: none;
     }
@@ -201,48 +399,89 @@
 
     .mobile-small-btn {
       min-width: 44px;
-      height: 44px;
 
-      padding: 0 12px;
+      height: 42px;
 
-      border-radius: 22px;
+      padding:
+        0 11px;
+
+      border-radius:
+        21px;
 
       border:
-        1px solid rgba(100, 235, 255, 0.7);
+        1px solid
+        rgba(
+          100,
+          235,
+          255,
+          0.72
+        );
 
       background:
-        rgba(3, 8, 25, 0.75);
+        rgba(
+          3,
+          8,
+          25,
+          0.72
+        );
 
-      color: white;
+      color:
+        white;
 
-      font-size: 14px;
-      font-weight: 700;
+      font-size:
+        13px;
 
-      pointer-events: auto;
-      touch-action: manipulation;
+      font-weight:
+        700;
+
+      pointer-events:
+        auto;
+
+      touch-action:
+        manipulation;
+
+      user-select:
+        none;
+
+      -webkit-tap-highlight-color:
+        transparent;
     }
 
 
-    /* -----------------------------------------------
-       MOBILE DIFFICULTY SELECTOR
-    ------------------------------------------------ */
+    /* =====================================================
+       DIFFICULTY SCREEN
+    ====================================================== */
 
     .mobile-difficulty {
       position: absolute;
+
       inset: 0;
 
       z-index: 30;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
-      padding: 20px;
+      padding: 15px;
+
+      box-sizing: border-box;
 
       background:
-        rgba(2, 5, 17, 0.72);
+        rgba(
+          2,
+          5,
+          17,
+          0.74
+        );
 
-      backdrop-filter: blur(4px);
+      backdrop-filter:
+        blur(4px);
+
+      -webkit-backdrop-filter:
+        blur(4px);
 
       pointer-events: auto;
     }
@@ -254,145 +493,241 @@
 
 
     .mobile-difficulty-panel {
-      width: min(520px, 92%);
+      width:
+        min(
+          520px,
+          92%
+        );
 
-      padding: 20px;
+      max-height:
+        94%;
 
-      border-radius: 16px;
+      box-sizing:
+        border-box;
+
+      padding:
+        17px;
+
+      border-radius:
+        15px;
 
       border:
-        1px solid rgba(70, 226, 255, 0.6);
+        1px solid
+        rgba(
+          70,
+          226,
+          255,
+          0.62
+        );
 
       background:
-        rgba(4, 9, 28, 0.94);
+        rgba(
+          4,
+          9,
+          28,
+          0.95
+        );
 
-      text-align: center;
-
-      box-shadow:
-        0 0 28px rgba(29, 208, 255, 0.18);
+      text-align:
+        center;
     }
 
 
     .mobile-difficulty-title {
-      margin: 0 0 6px;
+      margin:
+        0 0 5px;
 
-      color: #73f4ff;
+      color:
+        #73f4ff;
 
-      font-size: clamp(21px, 4vw, 30px);
-      font-weight: 800;
+      font-size:
+        clamp(
+          20px,
+          4vw,
+          29px
+        );
 
-      letter-spacing: 0.08em;
+      font-weight:
+        800;
+
+      letter-spacing:
+        0.08em;
     }
 
 
     .mobile-difficulty-subtitle {
-      margin: 0 0 16px;
+      margin:
+        0 0 13px;
 
-      color: #cad6ed;
+      color:
+        #cad6ed;
 
-      font-size: 14px;
+      font-size:
+        14px;
     }
 
 
     .mobile-difficulty-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+      display:
+        grid;
 
-      gap: 10px;
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap:
+        9px;
     }
 
 
     .mobile-mode-btn {
-      min-height: 58px;
+      min-height:
+        56px;
 
-      padding: 8px;
+      padding:
+        7px;
 
-      border-radius: 10px;
+      border-radius:
+        10px;
 
       border:
-        1px solid rgba(80, 225, 255, 0.55);
+        1px solid
+        rgba(
+          80,
+          225,
+          255,
+          0.55
+        );
 
       background:
-        rgba(11, 21, 48, 0.94);
+        rgba(
+          11,
+          21,
+          48,
+          0.94
+        );
 
-      color: white;
+      color:
+        white;
 
-      font-size: 15px;
-      font-weight: 700;
+      font-size:
+        15px;
 
-      touch-action: manipulation;
+      font-weight:
+        700;
+
+      touch-action:
+        manipulation;
+
+      -webkit-tap-highlight-color:
+        transparent;
     }
 
 
     .mobile-mode-btn span {
-      display: block;
+      display:
+        block;
 
-      margin-top: 4px;
+      margin-top:
+        3px;
 
-      color: #acb9d4;
+      color:
+        #acb9d4;
 
-      font-size: 11px;
-      font-weight: 400;
+      font-size:
+        11px;
+
+      font-weight:
+        400;
     }
 
 
     .mobile-mode-btn:active {
       background:
-        rgba(40, 199, 230, 0.32);
+        rgba(
+          40,
+          199,
+          230,
+          0.32
+        );
     }
 
 
-    /* -----------------------------------------------
-       PORTRAIT ROTATE MESSAGE
-    ------------------------------------------------ */
+    /* =====================================================
+       PORTRAIT ROTATION NOTICE
+    ====================================================== */
 
     .mobile-rotate {
       position: absolute;
+
       inset: 0;
 
       z-index: 50;
 
       display: none;
+
       align-items: center;
+
       justify-content: center;
+
+      box-sizing: border-box;
 
       padding: 30px;
 
       background:
-        rgba(2, 5, 18, 0.95);
+        rgba(
+          2,
+          5,
+          18,
+          0.97
+        );
 
-      color: white;
+      color:
+        white;
 
-      text-align: center;
+      text-align:
+        center;
 
-      pointer-events: auto;
+      pointer-events:
+        auto;
     }
 
 
     .mobile-rotate-icon {
-      font-size: 46px;
-      margin-bottom: 12px;
+      margin-bottom:
+        10px;
+
+      font-size:
+        44px;
     }
 
 
     .mobile-rotate strong {
-      display: block;
+      display:
+        block;
 
-      color: #6ef1ff;
+      margin-bottom:
+        7px;
 
-      font-size: 22px;
+      color:
+        #6ef1ff;
 
-      margin-bottom: 8px;
+      font-size:
+        22px;
     }
 
 
     .mobile-rotate p {
-      margin: 0;
+      margin:
+        0;
 
-      color: #c4cce0;
+      color:
+        #c4cce0;
 
-      font-size: 14px;
+      font-size:
+        14px;
     }
 
 
@@ -402,15 +737,16 @@
       (pointer: coarse) {
 
       .mobile-rotate {
-        display: flex;
+        display:
+          flex;
       }
 
     }
 
 
-    /* -----------------------------------------------
-       SMALL LANDSCAPE PHONES
-    ------------------------------------------------ */
+    /* =====================================================
+       SHORT LANDSCAPE PHONE
+    ====================================================== */
 
     @media
       (orientation: landscape)
@@ -419,58 +755,110 @@
 
       .mobile-left,
       .mobile-right {
-        bottom: 9px;
+        bottom:
+          max(
+            6px,
+            env(safe-area-inset-bottom)
+          );
       }
 
 
       .mobile-btn {
-        width: 54px;
-        height: 54px;
+        width:
+          50px;
 
-        font-size: 22px;
+        height:
+          50px;
+
+        font-size:
+          21px;
       }
 
 
       .mobile-btn-shoot {
-        width: 64px;
-        height: 64px;
+        width:
+          62px;
+
+        height:
+          62px;
       }
 
 
       .mobile-btn-dash {
-        width: 46px;
-        height: 46px;
+        width:
+          44px;
 
-        font-size: 12px;
+        height:
+          44px;
+
+        font-size:
+          11px;
       }
 
 
       .mobile-top-buttons {
-        top: 7px;
-        right: 7px;
+        top:
+          5px;
       }
 
 
       .mobile-small-btn {
-        height: 38px;
-        min-width: 38px;
+        min-width:
+          38px;
 
-        font-size: 12px;
+        height:
+          36px;
+
+        padding:
+          0 8px;
+
+        font-size:
+          11px;
       }
 
 
       .mobile-difficulty-panel {
-        padding: 13px;
+        padding:
+          10px;
+      }
+
+
+      .mobile-difficulty-title {
+        font-size:
+          20px;
+      }
+
+
+      .mobile-difficulty-subtitle {
+        margin-bottom:
+          8px;
+
+        font-size:
+          12px;
       }
 
 
       .mobile-difficulty-grid {
-        gap: 7px;
+        gap:
+          6px;
       }
 
 
       .mobile-mode-btn {
-        min-height: 48px;
+        min-height:
+          44px;
+
+        padding:
+          4px;
+
+        font-size:
+          13px;
+      }
+
+
+      .mobile-mode-btn span {
+        font-size:
+          10px;
       }
 
     }
@@ -478,11 +866,13 @@
   `;
 
 
-  document.head.appendChild(style);
+  document.head.appendChild(
+    style
+  );
 
 
   /* =======================================================
-     WRAP CANVAS
+     WRAP GAME CANVAS
   ======================================================= */
 
   let wrap =
@@ -490,12 +880,19 @@
 
 
   if (
-    !wrap ||
-    !wrap.classList.contains("mobile-game-wrap")
+    !wrap
+
+    ||
+
+    !wrap.classList.contains(
+      "mobile-game-wrap"
+    )
   ) {
 
     const newWrap =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
 
     newWrap.className =
@@ -520,11 +917,13 @@
 
 
   /* =======================================================
-     CREATE CONTROLS
+     CREATE TOUCH CONTROLS
   ======================================================= */
 
   const controls =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   controls.className =
@@ -539,10 +938,11 @@
         class="mobile-small-btn"
         data-tap-code="KeyM"
         type="button"
-        aria-label="Mute or unmute"
+        aria-label="Mute or unmute audio"
       >
         🔊
       </button>
+
 
       <button
         class="mobile-small-btn mobile-menu-btn"
@@ -565,6 +965,7 @@
       >
         ◀
       </button>
+
 
       <button
         class="mobile-btn"
@@ -590,6 +991,7 @@
         >
           ↑
         </button>
+
 
         <button
           class="mobile-btn mobile-btn-dash"
@@ -623,11 +1025,13 @@
 
 
   /* =======================================================
-     DIFFICULTY OVERLAY
+     MOBILE DIFFICULTY SELECTOR
   ======================================================= */
 
   const difficulty =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   difficulty.className =
@@ -655,7 +1059,9 @@
           type="button"
         >
           PRACTICE
-          <span>Unlimited health</span>
+          <span>
+            Unlimited health
+          </span>
         </button>
 
 
@@ -665,7 +1071,9 @@
           type="button"
         >
           EASY
-          <span>8 hearts</span>
+          <span>
+            8 hearts
+          </span>
         </button>
 
 
@@ -675,7 +1083,9 @@
           type="button"
         >
           MEDIUM
-          <span>5 hearts</span>
+          <span>
+            5 hearts
+          </span>
         </button>
 
 
@@ -685,7 +1095,9 @@
           type="button"
         >
           HARD
-          <span>3 hearts</span>
+          <span>
+            3 hearts
+          </span>
         </button>
 
       </div>
@@ -705,7 +1117,9 @@
   ======================================================= */
 
   const rotate =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   rotate.className =
@@ -739,22 +1153,32 @@
 
 
   /* =======================================================
-     KEY EVENT HELPERS
+     KEY HELPERS
   ======================================================= */
 
-  function keyDown(code) {
+  function keyDown(
+    code
+  ) {
 
     window.dispatchEvent(
 
       new KeyboardEvent(
+
         "keydown",
+
         {
-          code,
+
+          code:
+            code,
+
           key:
             code,
+
           bubbles:
             true
+
         }
+
       )
 
     );
@@ -762,19 +1186,29 @@
   }
 
 
-  function keyUp(code) {
+  function keyUp(
+    code
+  ) {
 
     window.dispatchEvent(
 
       new KeyboardEvent(
+
         "keyup",
+
         {
-          code,
+
+          code:
+            code,
+
           key:
             code,
+
           bubbles:
             true
+
         }
+
       )
 
     );
@@ -782,26 +1216,32 @@
   }
 
 
-  function tapKey(code) {
+  function tapKey(
+    code
+  ) {
 
-    keyDown(code);
+    keyDown(
+      code
+    );
 
 
     setTimeout(
       () => {
 
-        keyUp(code);
+        keyUp(
+          code
+        );
 
       },
-      45
+
+      55
     );
 
   }
 
 
   /* =======================================================
-     HOLD BUTTONS
-     Supports simultaneous movement + jump + shooting.
+     HOLD CONTROLS
   ======================================================= */
 
   controls
@@ -815,16 +1255,19 @@
           button.dataset.holdCode;
 
 
-        const release = () => {
+        const release =
+          () => {
 
-          keyUp(code);
+            keyUp(
+              code
+            );
 
 
-          button.classList.remove(
-            "mobile-active"
-          );
+            button.classList.remove(
+              "mobile-active"
+            );
 
-        };
+          };
 
 
         button.addEventListener(
@@ -842,10 +1285,12 @@
 
             }
 
-            catch (_) {}
+            catch (error) {}
 
 
-            keyDown(code);
+            keyDown(
+              code
+            );
 
 
             button.classList.add(
@@ -861,7 +1306,6 @@
           event => {
 
             event.preventDefault();
-
 
             release();
 
@@ -885,7 +1329,7 @@
 
 
   /* =======================================================
-     TAP BUTTONS
+     TAP CONTROLS
   ======================================================= */
 
   controls
@@ -977,6 +1421,7 @@
           );
 
         },
+
         80
       );
 
@@ -999,26 +1444,314 @@
 
 
   /* =======================================================
-     SAFETY — RELEASE KEYS IF APP LOSES FOCUS
+     RELEASE CONTROLS IF PAGE LOSES FOCUS
   ======================================================= */
+
+  function releaseAllControls() {
+
+    [
+
+      "ArrowLeft",
+
+      "ArrowRight",
+
+      "Space",
+
+      "KeyZ",
+
+      "ShiftLeft"
+
+    ]
+    .forEach(
+      keyUp
+    );
+
+
+    controls
+      .querySelectorAll(
+        ".mobile-active"
+      )
+      .forEach(
+        button => {
+
+          button.classList.remove(
+            "mobile-active"
+          );
+
+        }
+      );
+
+  }
+
 
   window.addEventListener(
     "blur",
+    releaseAllControls
+  );
+
+
+  document.addEventListener(
+    "visibilitychange",
     () => {
 
-      [
-        "ArrowLeft",
-        "ArrowRight",
-        "Space",
-        "KeyZ",
-        "ShiftLeft"
-      ]
-      .forEach(
-        keyUp
+      if (
+        document.hidden
+      ) {
+
+        releaseAllControls();
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     FIT GAME TO VISIBLE PHONE SCREEN
+
+     Keeps the full 1280 × 720 canvas visible.
+     Uses whichever limit is reached first:
+     width OR remaining screen height.
+  ======================================================= */
+
+  function fitGameToScreen() {
+
+    const viewportWidth =
+
+      window.visualViewport
+
+        ? window.visualViewport.width
+
+        : window.innerWidth;
+
+
+    const viewportHeight =
+
+      window.visualViewport
+
+        ? window.visualViewport.height
+
+        : window.innerHeight;
+
+
+    /*
+      The game may sit underneath the existing
+      Syntax Arcade HUD, so calculate how much
+      vertical room remains from the top of the
+      game container.
+    */
+
+    const rect =
+      wrap.getBoundingClientRect();
+
+
+    const topOffset =
+
+      Math.max(
+        0,
+        rect.top
+      );
+
+
+    const availableWidth =
+
+      Math.max(
+
+        100,
+
+        viewportWidth -
+        8
+
+      );
+
+
+    const availableHeight =
+
+      Math.max(
+
+        100,
+
+        viewportHeight -
+        topOffset -
+        6
+
+      );
+
+
+    /*
+      Game is 1280 × 720.
+    */
+
+    const gameRatio =
+
+      1280 /
+      720;
+
+
+    let gameWidth =
+      availableWidth;
+
+
+    let gameHeight =
+
+      gameWidth /
+      gameRatio;
+
+
+    /*
+      If fitting by width makes the canvas
+      too tall, fit by height instead.
+    */
+
+    if (
+      gameHeight >
+      availableHeight
+    ) {
+
+      gameHeight =
+        availableHeight;
+
+
+      gameWidth =
+
+        gameHeight
+
+        *
+
+        gameRatio;
+
+    }
+
+
+    gameWidth =
+
+      Math.max(
+        1,
+        Math.floor(
+          gameWidth
+        )
+      );
+
+
+    gameHeight =
+
+      Math.max(
+        1,
+        Math.floor(
+          gameHeight
+        )
+      );
+
+
+    wrap.style.width =
+      `${gameWidth}px`;
+
+
+    wrap.style.height =
+      `${gameHeight}px`;
+
+
+    canvas.style.width =
+      "100%";
+
+
+    canvas.style.height =
+      "100%";
+
+
+    /*
+      Keep the game centered if it has
+      to shrink because of screen height.
+    */
+
+    wrap.style.marginLeft =
+      "auto";
+
+
+    wrap.style.marginRight =
+      "auto";
+
+  }
+
+
+  /* =======================================================
+     RUN FIT
+  ======================================================= */
+
+  fitGameToScreen();
+
+
+  /*
+    Mobile browser bars often change size
+    shortly after the page first opens.
+  */
+
+  setTimeout(
+    fitGameToScreen,
+    100
+  );
+
+
+  setTimeout(
+    fitGameToScreen,
+    400
+  );
+
+
+  setTimeout(
+    fitGameToScreen,
+    900
+  );
+
+
+  /* =======================================================
+     REFIT WHEN SCREEN CHANGES
+  ======================================================= */
+
+  window.addEventListener(
+    "resize",
+    fitGameToScreen
+  );
+
+
+  window.addEventListener(
+    "orientationchange",
+    () => {
+
+      releaseAllControls();
+
+
+      setTimeout(
+        fitGameToScreen,
+        100
+      );
+
+
+      setTimeout(
+        fitGameToScreen,
+        400
       );
 
     }
   );
+
+
+  if (
+    window.visualViewport
+  ) {
+
+    window.visualViewport.addEventListener(
+      "resize",
+      fitGameToScreen
+    );
+
+
+    window.visualViewport.addEventListener(
+      "scroll",
+      fitGameToScreen
+    );
+
+  }
 
 
 })();
