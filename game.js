@@ -578,6 +578,32 @@ function loop(now) {
   draw();
   requestAnimationFrame(loop);
 }
+/* =========================================================
+   HUD
+========================================================= */
+
+function updateHUD() {
+
+  if (currentDifficulty.maxHp === Infinity) {
+
+    healthEl.textContent =
+      `${currentDifficulty.label} • ❤️∞`;
+
+  } else {
+
+    healthEl.textContent =
+      `${currentDifficulty.label} • ` +
+      "❤️".repeat(player.hp) +
+      "🖤".repeat(player.maxHp - player.hp);
+
+  }
+
+  shardEl.textContent =
+    shards.filter(
+      shard => shard.taken
+    ).length;
+
+}
 
 /* =========================================================
    START
